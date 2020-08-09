@@ -25,11 +25,11 @@ public class DefaultConfigTest
 	@Test
 	public void testSizeObject()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.addStream(stream("medium: { width: 100, height: 100 }"))
 			.build();
 
-		Optional<Size> size = config.asObject("medium", Size.class);
+		Optional<Size> size = config.get("medium", Size.class);
 		assertThat(size, notNullValue());
 
 		Size actual = size.get();
@@ -42,12 +42,12 @@ public class DefaultConfigTest
 	@Test
 	public void testSizeObjectViaKeys()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.with("medium.width", 100)
 			.with("medium.height", 100)
 			.build();
 
-		Optional<Size> size = config.asObject("medium", Size.class);
+		Optional<Size> size = config.get("medium", Size.class);
 		assertThat(size, notNullValue());
 
 		Size actual = size.get();
@@ -60,11 +60,11 @@ public class DefaultConfigTest
 	@Test
 	public void testThumbnailsObject()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.addStream(stream("thumbnails: { \n medium: { width: 100, height: 100 }\n }"))
 			.build();
 
-		Optional<Thumbnails> value = config.asObject("thumbnails", Thumbnails.class);
+		Optional<Thumbnails> value = config.get("thumbnails", Thumbnails.class);
 		assertThat(value, notNullValue());
 
 		Thumbnails thumbs = value.get();
@@ -76,56 +76,56 @@ public class DefaultConfigTest
 	@Test
 	public void testInvalidSize()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.withValidatorFactory(Validation.buildDefaultValidatorFactory())
 			.addStream(stream("medium: { width: 100 }\n }"))
 			.build();
 
 		assertThrows(ConfigException.class, () -> {
-			config.asObject("medium", Size.class);
+			config.get("medium", Size.class);
 		});
 	}
 
 	@Test
 	public void testInvalidThumbnailsSize()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.withValidatorFactory(Validation.buildDefaultValidatorFactory())
 			.addStream(stream("thumbnails: { \n medium: { width: 100, height: 4000 }\n }"))
 			.build();
 
 		assertThrows(ConfigException.class, () -> {
-			config.asObject("thumbnails", Thumbnails.class);
+			config.get("thumbnails", Thumbnails.class);
 		});
 	}
 
 	@Test
 	public void testListAccessor()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.addStream(stream("values: [ \n \"one\", \n \"two\" \n ]"))
 			.build();
 
-		String value = config.asObject("values.0", String.class).get();
+		String value = config.get("values.0", String.class).get();
 		assertThat(value, is("one"));
 
-		value = config.asObject("values.1", String.class).get();
+		value = config.get("values.1", String.class).get();
 		assertThat(value, is("two"));
 	}
 
 	@Test
 	public void testListAccessorWithSizes()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.addStream(stream("values: [ \n { width: 100, height: 100 }, \n { width: 200, height: 200 } \n ]"))
 			.build();
 
-		Size value = config.asObject("values.0", Size.class).get();
+		Size value = config.get("values.0", Size.class).get();
 		assertThat(value, notNullValue());
 		assertThat(value.width, is(100));
 		assertThat(value.height, is(100));
 
-		value = config.asObject("values.1", Size.class).get();
+		value = config.get("values.1", Size.class).get();
 		assertThat(value, notNullValue());
 		assertThat(value.width, is(200));
 		assertThat(value.height, is(200));
@@ -134,11 +134,11 @@ public class DefaultConfigTest
 	@Test
 	public void testListAccessorWithSubPath()
 	{
-		Config config = Config.builder()
+		Config config = Config.create()
 			.addStream(stream("values: [ \n { width: 100, height: 100 } \n ]"))
 			.build();
 
-		Integer value = config.asObject("values.0.width", Integer.class).get();
+		Integer value = config.get("values.0.width", Integer.class).get();
 		assertThat(value, is(100));
 	}
 

@@ -46,7 +46,7 @@ public class ConfigKey
 	@NonNull
 	public <T> Optional<T> asObject(String subPath, Class<T> type)
 	{
-		return config.asObject(key + ConfigKeys.PATH_DELIMITER + subPath, type);
+		return config.get(key + ConfigKeys.PATH_DELIMITER + subPath, type);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class ConfigKey
 	 */
 	public <T> T asObject(Class<T> type)
 	{
-		return config.asObject(key, type).get();
+		return config.get(key, type).get();
 	}
 
 	public static class ConfigKeySerializer

@@ -7,8 +7,6 @@ import java.util.Optional;
 
 import javax.validation.ValidatorFactory;
 
-import org.eclipse.collections.api.RichIterable;
-
 import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.exobytes.Serializer;
 import se.l4.exobytes.Serializers;
@@ -17,17 +15,17 @@ import se.l4.exoconf.sources.ConfigSource;
 
 /**
  * Configuration as loaded from config files. Instances of this type can
- * be created via {@link #builder()}.
+ * be created via {@link #create()}.
  *
  * <p>
  * Example usage:
  * <pre>
- * Config config = Config.builder()
+ * Config config = Config.create()
  *	.addFile("/etc/app/normal.conf")
  *	.build();
  *
- * Value<Thumbnails> thumbs = config.get("thumbs", Thumbnails.class);
- * Value<Size> mediumSize = config.get("thumbs.medium", Size.class);
+ * Optional<Thumbnails> thumbs = config.get("thumbs", Thumbnails.class);
+ * Optional<Size> mediumSize = config.get("thumbs.medium", Size.class);
  * </pre>
  *
  * <h2>Configuration file format</h2>
@@ -63,7 +61,7 @@ public interface Config
 	 * @return
 	 */
 	@NonNull
-	<T> Optional<T> asObject(@NonNull String path, @NonNull Class<T> type);
+	<T> Optional<T> get(@NonNull String path, @NonNull Class<T> type);
 
 	/**
 	 * Resolve values as the given path as an object. This is equivalent
@@ -75,7 +73,7 @@ public interface Config
 	 * @return
 	 */
 	@NonNull
-	<T> Optional<T> asObject(@NonNull String path, @NonNull Serializer<T> serializer);
+	<T> Optional<T> get(@NonNull String path, @NonNull Serializer<T> serializer);
 
 	/**
 	 * Get a new {@link ConfigBuilder} to create a new configuration.
@@ -83,7 +81,7 @@ public interface Config
 	 * @return
 	 */
 	@NonNull
-	static Builder builder()
+	static Builder create()
 	{
 		return new ConfigBuilderImpl();
 	}

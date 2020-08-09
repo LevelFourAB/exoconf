@@ -47,14 +47,14 @@ public class DefaultConfig
 	}
 
 	@Override
-	public <T> Optional<T> asObject(String path, Class<T> type)
+	public <T> Optional<T> get(String path, Class<T> type)
 	{
 		Serializer<T> serializer = collection.get(type);
-		return asObject(path, serializer);
+		return get(path, serializer);
 	}
 
 	@Override
-	public <T> Optional<T> asObject(String path, Serializer<T> serializer)
+	public <T> Optional<T> get(String path, Serializer<T> serializer)
 	{
 		Objects.requireNonNull(path);
 		Objects.requireNonNull(serializer);
