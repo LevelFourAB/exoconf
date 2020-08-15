@@ -134,7 +134,7 @@ public class ConfigBuilderImpl
 	}
 
 	@Override
-	public Config.Builder with(String key, Object value)
+	public Config.Builder addProperty(String key, Object value)
 	{
 		this.keys.put(key, value);
 		return this;

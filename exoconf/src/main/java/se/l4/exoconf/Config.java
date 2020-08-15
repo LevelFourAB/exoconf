@@ -187,14 +187,14 @@ public interface Config
 		Builder addSource(@NonNull ConfigSource source);
 
 		/**
-		 * Add a key to the current configuration.
+		 * Add a property to the current configuration.
 		 *
 		 * @param key
 		 * @param value
 		 * @return
 		 */
 		@NonNull
-		Builder with(@NonNull String key, Object value);
+		Builder addProperty(@NonNull String key, Object value);
 
 		/**
 		 * Create the configuration object. This will load any declared input

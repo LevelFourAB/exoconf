@@ -43,8 +43,8 @@ public class DefaultConfigTest
 	public void testSizeObjectViaKeys()
 	{
 		Config config = Config.create()
-			.with("medium.width", 100)
-			.with("medium.height", 100)
+			.addProperty("medium.width", 100)
+			.addProperty("medium.height", 100)
 			.build();
 
 		Optional<Size> size = config.get("medium", Size.class);
