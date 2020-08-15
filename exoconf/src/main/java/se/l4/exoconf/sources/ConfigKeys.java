@@ -10,7 +10,7 @@ import org.eclipse.collections.api.RichIterable;
  */
 public class ConfigKeys
 {
-	private static Pattern INDEX = Pattern.compile("[0-9]+");
+	private static final Pattern INDEX = Pattern.compile("[0-9]+");
 
 	private ConfigKeys()
 	{
