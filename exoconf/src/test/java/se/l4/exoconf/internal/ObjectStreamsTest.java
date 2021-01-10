@@ -3,10 +3,7 @@ package se.l4.exoconf.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Maps;
@@ -45,16 +42,16 @@ public class ObjectStreamsTest
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(ConfigKey.NAME));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(""));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -80,16 +77,16 @@ public class ObjectStreamsTest
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(ConfigKey.NAME));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(""));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -115,31 +112,31 @@ public class ObjectStreamsTest
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(ConfigKey.NAME));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(""));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(ConfigKey.NAME));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("sub"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -169,16 +166,16 @@ public class ObjectStreamsTest
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(ConfigKey.NAME));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is(""));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("sub"));
 
 		assertThat(in.peek(), is(Token.LIST_START));

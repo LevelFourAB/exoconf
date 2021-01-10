@@ -115,7 +115,7 @@ public class MapInput
 			case START:
 				return Token.OBJECT_START;
 			case KEY:
-				return Token.KEY;
+				return Token.VALUE;
 			case VALUE:
 				Token peeked = subInput.peek();
 				if(peeked != Token.END_OF_STREAM)
@@ -147,7 +147,7 @@ public class MapInput
 			case KEY:
 				setState(State.VALUE);
 				subInput = resolveInput();
-				return Token.KEY;
+				return Token.VALUE;
 			case VALUE:
 				/*
 				 * Value state, check the sub input until it returns null
@@ -202,7 +202,7 @@ public class MapInput
 	}
 
 	@Override
-	protected void skipKeyOrValue()
+	protected void skipValue()
 		throws IOException
 	{
 		if(subInput != null)
@@ -309,7 +309,7 @@ public class MapInput
 		switch(previousState)
 		{
 			case VALUE:
-			markValueRead();	
+			markValueRead();
 				return subInput.readInt();
 			default:
 				throw raiseException("Not reading a value");

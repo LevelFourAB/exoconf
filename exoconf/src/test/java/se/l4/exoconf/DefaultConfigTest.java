@@ -58,6 +58,23 @@ public class DefaultConfigTest
 	}
 
 	@Test
+	public void testSizeObjectViaConfigWithPeriods()
+	{
+		Config config = Config.create()
+			.addStream(stream("medium.width: 100\nmedium.height: 100"))
+			.build();
+
+		Optional<Size> size = config.get("medium", Size.class);
+		assertThat(size, notNullValue());
+
+		Size actual = size.get();
+		assertThat(actual, notNullValue());
+
+		assertThat(actual.width, is(100));
+		assertThat(actual.height, is(100));
+	}
+
+	@Test
 	public void testThumbnailsObject()
 	{
 		Config config = Config.create()

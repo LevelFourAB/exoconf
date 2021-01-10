@@ -29,17 +29,17 @@ public class ConfigJsonInputTest
 		String v = "\"key1\": \"value1\", \"key2\": \"value2\"";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key1\""));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key1"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("value1"));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key2\""));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
@@ -55,18 +55,18 @@ public class ConfigJsonInputTest
 	{
 		String v = "\"key1\": null, \"key2\": normal";
 		StreamingInput in = createInput(v);
-		
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key1\""));
+
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key1"));
 
 		assertThat(in.peek(), is(Token.NULL));
 		assertThat(in.next(), is(Token.NULL));
 		assertThat(in.readDynamic(), nullValue());
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key2\""));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
@@ -87,18 +87,18 @@ public class ConfigJsonInputTest
 	{
 		String v = "\"key1\": \"value1\" \"key2\": \"value2\"";
 		StreamingInput in = createInput(v);
-		
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key1\""));
+
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key1"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("value1"));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key2\""));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
@@ -120,22 +120,41 @@ public class ConfigJsonInputTest
 	{
 		String v = "\"key1\": 22.0\n\"key2\": \"value2\"";
 		StreamingInput in = createInput(v);
-		
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key1\""));
+
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key1"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readFloat(), is(22.0f));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
-		assertThat(in.readString(), is("\"key2\""));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("value2"));
+
+		assertThat(in.peek(), is(Token.END_OF_STREAM));
+		assertThat(in.next(), is(Token.END_OF_STREAM));
+	}
+
+	@Test
+	public void testObjectValuesWithNullKey()
+		throws Exception
+	{
+		String v = "null: normal";
+		StreamingInput in = createInput(v);
+
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("null"));
+
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
+		assertThat(in.readString(), is("normal"));
 
 		assertThat(in.peek(), is(Token.END_OF_STREAM));
 		assertThat(in.next(), is(Token.END_OF_STREAM));
@@ -153,8 +172,8 @@ public class ConfigJsonInputTest
 		String v = "key: value with spaces";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -177,16 +196,16 @@ public class ConfigJsonInputTest
 		String v = "key: value with spaces\nkey2: another value 21.0";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("value with spaces"));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -209,8 +228,8 @@ public class ConfigJsonInputTest
 		String v = "key = value with spaces";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -233,16 +252,16 @@ public class ConfigJsonInputTest
 		String v = "key: value with spaces\n# This is a comment\nkey2: another value 21.0";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.VALUE));
 		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("value with spaces"));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -281,15 +300,15 @@ public class ConfigJsonInputTest
 		String v = "key { key2: value }";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));
@@ -315,15 +334,15 @@ public class ConfigJsonInputTest
 		String v = "key\n{ key2: value }";
 		StreamingInput in = createInput(v);
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key"));
 
 		assertThat(in.peek(), is(Token.OBJECT_START));
 		assertThat(in.next(), is(Token.OBJECT_START));
 
-		assertThat(in.peek(), is(Token.KEY));
-		assertThat(in.next(), is(Token.KEY));
+		assertThat(in.peek(), is(Token.VALUE));
+		assertThat(in.next(), is(Token.VALUE));
 		assertThat(in.readString(), is("key2"));
 
 		assertThat(in.peek(), is(Token.VALUE));

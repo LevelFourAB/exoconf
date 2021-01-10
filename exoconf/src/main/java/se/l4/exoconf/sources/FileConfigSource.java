@@ -129,7 +129,7 @@ public class FileConfigSource
 		while((t = input.peek()) != Token.OBJECT_END && t != Token.END_OF_STREAM)
 		{
 			// Read the key
-			input.next(Token.KEY);
+			input.next(Token.VALUE);
 			String key = input.readString();
 
 			// Read the value

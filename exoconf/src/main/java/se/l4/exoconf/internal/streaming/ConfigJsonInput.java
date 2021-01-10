@@ -31,6 +31,8 @@ public class ConfigJsonInput
 	private Token token;
 	private Object value;
 
+	private boolean isKey;
+
 	public ConfigJsonInput(Reader in)
 	{
 		this.in = in;
@@ -179,11 +181,6 @@ public class ConfigJsonInput
 				return Token.LIST_START;
 			case ']':
 				return Token.LIST_END;
-		}
-
-		if(token != Token.KEY && ! lists[level])
-		{
-			return Token.KEY;
 		}
 
 		if(c == 'n')
@@ -369,67 +366,69 @@ public class ConfigJsonInput
 	public Token next0()
 		throws IOException
 	{
-		char peeked = peekChar();
-		Token token = toToken(position);
+		Token token = peek0();
 		switch(token)
 		{
 			case OBJECT_END:
 			case LIST_END:
+				isKey = false;
 				readNext();
 				level--;
 				return this.token = token;
 			case OBJECT_START:
 			case LIST_START:
+				isKey = false;
 				readNext();
 				level++;
 				lists[level] = token == Token.LIST_START;
 				return this.token = token;
-			case KEY:
+			case VALUE:
 			{
-				readWhitespace();
-				String key;
-				if(peeked == '"')
+				isKey = ! isKey && ! lists[level];
+
+				if(isKey)
 				{
-					key = readString(true);
-
-					key = "\"" + key + "\""; // Wrap with quotes for correct translation
-
-					char next = peekChar();
-					if(next == ':' || next == '=')
+					readWhitespace();
+					if(peekChar() == '"')
 					{
-						readNext();
-					}
-					else if(next == '{' || next == '[')
-					{
-						// Just skip
+						value = readString(true);
+
+						char next = peekChar();
+						if(next == ':' || next == '=')
+						{
+							readNext();
+						}
+						else if(next == '{' || next == '[')
+						{
+							// Just skip
+						}
+						else
+						{
+							throw new IOException("Expected :, got " + next);
+						}
 					}
 					else
 					{
-						throw new IOException("Expected :, got " + next);
+						// Case where keys do not include quotes
+						value = readKey();
 					}
 				}
 				else
 				{
-					// Case where keys do not include quotes
-					key = readKey();
+					value = readNextValue();
+
+					// Check for trailing commas
+					readWhitespace();
+					char c = peekChar();
+					if(c == ',') read();
 				}
-
-				value = key;
-				return this.token = token;
-			}
-			case VALUE:
-			{
-				value = readNextValue();
-
-				// Check for trailing commas
-				readWhitespace();
-				char c = peekChar();
-				if(c == ',') read();
 
 				return this.token = token;
 			}
 			case NULL:
 			{
+				isKey = false;
+
 				value = null;
 				Object s = readNextValue();
 				if(! s.equals("null"))
@@ -521,14 +520,20 @@ public class ConfigJsonInput
 
 		if(limit - position > 0)
 		{
-			return toToken(position);
+			Token token = toToken(position);
+			if(token == Token.NULL && ! isKey && ! lists[level])
+			{
+				return Token.VALUE;
+			}
+
+			return token;
 		}
 
 		return Token.END_OF_STREAM;
 	}
 
 	@Override
-	protected void skipKeyOrValue()
+	protected void skipValue()
 		throws IOException
 	{
 		switch(peek())
