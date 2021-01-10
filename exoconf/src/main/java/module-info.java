@@ -1,7 +1,7 @@
 module se.l4.exoconf {
 	requires com.github.spotbugs.annotations;
 
-	requires java.validation;
+	requires transitive java.validation;
 	requires org.eclipse.collections.api;
 
 	requires transitive se.l4.exobytes;
