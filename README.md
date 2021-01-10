@@ -13,6 +13,22 @@ Config config = Config.create()
 Optional<String> value = config.get("path.to.value", String.class);
 ```
 
+## License
+
+This project is licensed under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0),
+see the file `LICENSE` and `NOTICE` for details.
+
+## Usage via Maven
+
+```xml
+<dependency>
+  <groupId>se.l4.exoconf</groupId>
+  <artifactId>exoconf</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+
 ## Configuration format
 
 The format of configuration files is similar to JSON but more lenient in how
