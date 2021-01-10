@@ -6,6 +6,8 @@ package se.l4.exoconf;
 public class ConfigException
 	extends RuntimeException
 {
+	private static final long serialVersionUID = -4873116760295736892L;
+
 	public ConfigException()
 	{
 		super();
