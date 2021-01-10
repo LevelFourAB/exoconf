@@ -76,6 +76,14 @@ public interface Config
 	<T> Optional<T> get(@NonNull String path, @NonNull Serializer<T> serializer);
 
 	/**
+	 * Scope this configuration to the specified path.
+	 *
+	 * @param path
+	 * @return
+	 */
+	Config scope(String path);
+
+	/**
 	 * Get a new {@link ConfigBuilder} to create a new configuration.
 	 *
 	 * @return

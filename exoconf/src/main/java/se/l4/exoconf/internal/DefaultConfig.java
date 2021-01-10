@@ -83,6 +83,12 @@ public class DefaultConfig
 		}
 	}
 
+	@Override
+	public Config scope(String path)
+	{
+		return new ScopedConfig(this, path);
+	}
+
 	private void validateInstance(String path, Object object)
 	{
 		if(validatorFactory == null) return;

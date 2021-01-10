@@ -159,6 +159,23 @@ public class DefaultConfigTest
 		assertThat(value, is(100));
 	}
 
+	@Test
+	public void testScope()
+	{
+		Config config = Config.create()
+			.addStream(stream("scope.medium: { width: 100, height: 100 }"))
+			.build();
+
+		Optional<Size> size = config.scope("scope").get("medium", Size.class);
+		assertThat(size, notNullValue());
+
+		Size actual = size.get();
+		assertThat(actual, notNullValue());
+
+		assertThat(actual.width, is(100));
+		assertThat(actual.height, is(100));
+	}
+
 	private InputStream stream(String in)
 	{
 		return new ByteArrayInputStream(in.getBytes(StandardCharsets.UTF_8));
