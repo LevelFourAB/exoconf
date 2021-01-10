@@ -7,6 +7,9 @@ import java.util.Optional;
 
 import javax.validation.ValidatorFactory;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 import se.l4.exobytes.Serializer;
 import se.l4.exobytes.Serializers;
@@ -91,7 +94,13 @@ public interface Config
 	@NonNull
 	static Builder create()
 	{
-		return new ConfigBuilderImpl();
+		return new ConfigBuilderImpl(
+			null,
+			null,
+			null,
+			Lists.immutable.empty(),
+			Maps.immutable.empty()
+		);
 	}
 
 	/**

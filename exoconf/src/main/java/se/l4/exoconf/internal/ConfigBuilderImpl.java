@@ -4,15 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.ValidatorFactory;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 import se.l4.exobytes.Serializers;
 import se.l4.exoconf.Config;
@@ -30,33 +28,51 @@ import se.l4.ylem.io.IOSupplier;
 public class ConfigBuilderImpl
 	implements Config.Builder
 {
-	private final MutableMap<String, Object> keys;
-	private final List<IOSupplier<ConfigSource>> suppliers;
+	private final ImmutableMap<String, Object> keys;
+	private final ImmutableList<IOSupplier<ConfigSource>> suppliers;
 
-	private Serializers collection;
-	private ValidatorFactory validatorFactory;
+	private final Serializers serializers;
+	private final ValidatorFactory validatorFactory;
 
-	private File root;
+	private final File root;
 
-	public ConfigBuilderImpl()
+	public ConfigBuilderImpl(
+		Serializers serializers,
+		ValidatorFactory validatorFactory,
+		File root,
+		ImmutableList<IOSupplier<ConfigSource>> suppliers,
+		ImmutableMap<String, Object> keys
+	)
 	{
-		suppliers = new ArrayList<>();
-
-		keys = Maps.mutable.empty();
+		this.serializers = serializers;
+		this.validatorFactory = validatorFactory;
+		this.root = root;
+		this.keys = keys;
+		this.suppliers = suppliers;
 	}
 
 	@Override
 	public Config.Builder withSerializers(Serializers serializers)
 	{
-		this.collection = serializers;
-		return this;
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers,
+			keys
+		);
 	}
 
 	@Override
-	public Config.Builder withValidatorFactory(ValidatorFactory validation)
+	public Config.Builder withValidatorFactory(ValidatorFactory validatorFactory)
 	{
-		this.validatorFactory = validation;
-		return this;
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers,
+			keys
+		);
 	}
 
 	@Override
@@ -74,9 +90,13 @@ public class ConfigBuilderImpl
 	@Override
 	public Config.Builder withRoot(File root)
 	{
-		this.root = root;
-
-		return this;
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers,
+			keys
+		);
 	}
 
 	@Override
@@ -94,12 +114,13 @@ public class ConfigBuilderImpl
 	@Override
 	public Config.Builder addFile(File file)
 	{
+		File root = this.root;
 		if(root == null)
 		{
 			root = file.getParentFile();
 		}
 
-		suppliers.add(() -> {
+		IOSupplier<ConfigSource> supplier = () -> {
 			if(! file.exists())
 			{
 				throw new ConfigException("The file " + file + " does not exist");
@@ -114,44 +135,67 @@ public class ConfigBuilderImpl
 			}
 
 			return FileConfigSource.read(file);
-		});
+		};
 
-		return this;
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers.newWith(supplier),
+			keys
+		);
 	}
 
 	@Override
 	public Config.Builder addStream(InputStream stream)
 	{
-		suppliers.add(() -> FileConfigSource.read(stream));
-		return this;
+		IOSupplier<ConfigSource> supplier = () -> FileConfigSource.read(stream);
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers.newWith(supplier),
+			keys
+		);
 	}
 
 	@Override
 	public Config.Builder addSource(ConfigSource source)
 	{
-		suppliers.add(() -> source);
-		return this;
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers.newWith(() -> source),
+			keys
+		);
 	}
 
 	@Override
 	public Config.Builder addProperty(String key, Object value)
 	{
-		this.keys.put(key, value);
-		return this;
+		return new ConfigBuilderImpl(
+			serializers,
+			validatorFactory,
+			root,
+			suppliers,
+			keys.newWithKeyValue(key, value)
+		);
 	}
 
 	@Override
 	public Config build()
 	{
-		if(collection == null)
+		Serializers serializers = this.serializers;
+		if(serializers == null)
 		{
-			collection = Serializers.create()
+			serializers = Serializers.create()
 				.build();
 		}
 		else
 		{
-			collection = Serializers.create()
-				.wrap(collection)
+			serializers = Serializers.create()
+				.wrap(serializers)
 				.build();
 		}
 
@@ -173,6 +217,6 @@ public class ConfigBuilderImpl
 		sources.add(new EnvironmentConfigSource());
 
 		ConfigSource source = new MergingConfigSource(sources.toReversed());
-		return new DefaultConfig(collection, validatorFactory, source, root);
+		return new DefaultConfig(serializers, validatorFactory, source, root);
 	}
 }
