@@ -1,6 +1,6 @@
 # Exoconf
 
-Exoconf is a small library to manage configuration for Java 9+. Exoconf is
+Exoconf is a small library to manage configuration for Java 9+. Exoconf 
 supports turning configuration into objects using [Exobytes](https://github.com/LevelFourAB/exobytes)
 by pulling configuration from different sources, like files in an easy to write
 format and environment variables.
