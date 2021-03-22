@@ -15,8 +15,8 @@ Optional<String> value = config.get("path.to.value", String.class);
 
 ## License
 
-This project is licensed under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0),
-see the file `LICENSE` and `NOTICE` for details.
+This project is licensed under the [MIT license](https://opensource.org/licenses/MIT),
+see the file `LICENSE.md` for details.
 
 ## Usage via Maven
 
