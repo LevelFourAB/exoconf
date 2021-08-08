@@ -1,13 +1,12 @@
 package se.l4.exoconf.internal;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.Path.Node;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
@@ -43,6 +42,7 @@ public class DefaultConfig
 		this.source = source;
 
 		collection.register(File.class, new FileSerializer(root));
+		collection.register(Path.class, new PathSerializer(root.toPath()));
 		collection.register(ConfigKey.class, new ConfigKey.ConfigKeySerializer(this));
 	}
 
@@ -116,10 +116,10 @@ public class DefaultConfig
 		throw new ConfigException(builder.toString());
 	}
 
-	private String join(Path path)
+	private String join(javax.validation.Path path)
 	{
 		StringBuilder builder = new StringBuilder();
-		for(Node node : path)
+		for(javax.validation.Path.Node node : path)
 		{
 			if(builder.length() > 0)
 			{
