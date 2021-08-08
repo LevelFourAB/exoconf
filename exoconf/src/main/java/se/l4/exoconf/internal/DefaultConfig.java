@@ -42,7 +42,7 @@ public class DefaultConfig
 		this.source = source;
 
 		collection.register(File.class, new FileSerializer(root));
-		collection.register(Path.class, new PathSerializer(root.toPath()));
+		collection.register(Path.class, new PathSerializer(root == null ? null : root.toPath()));
 		collection.register(ConfigKey.class, new ConfigKey.ConfigKeySerializer(this));
 	}
 
