@@ -3,6 +3,7 @@ package se.l4.exoconf.internal.streaming;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.OptionalInt;
 
 import se.l4.exobytes.SerializationException;
@@ -113,13 +114,17 @@ public class ValueInput
 	@Override
 	public double readDouble()
 	{
-		return ((Number) value).doubleValue();
+		return value instanceof Number
+			? ((Number) value).doubleValue()
+			: Double.parseDouble(String.valueOf(value));
 	}
 
 	@Override
 	public float readFloat()
 	{
-		return ((Number) value).floatValue();
+		return value instanceof Number
+			? ((Number) value).floatValue()
+			: Float.parseFloat(String.valueOf(value));
 	}
 
 	@Override
@@ -137,13 +142,17 @@ public class ValueInput
 	@Override
 	public short readShort()
 	{
-		return ((Number) value).shortValue();
+		return value instanceof Number
+			? ((Number) value).shortValue()
+			: Short.parseShort(String.valueOf(value));
 	}
 
 	@Override
 	public byte readByte()
 	{
-		return ((Number) value).byteValue();
+		return value instanceof Number
+			? ((Number) value).byteValue()
+			: Byte.parseByte(String.valueOf(value));
 	}
 
 	@Override
@@ -155,7 +164,9 @@ public class ValueInput
 	@Override
 	public byte[] readByteArray()
 	{
-		return (byte[]) value;
+		return value instanceof byte[]
+			? (byte[]) value
+			: Base64.getDecoder().decode(String.valueOf(value));
 	}
 
 	@Override
