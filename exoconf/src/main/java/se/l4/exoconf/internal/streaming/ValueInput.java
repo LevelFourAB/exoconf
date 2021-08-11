@@ -130,13 +130,17 @@ public class ValueInput
 	@Override
 	public long readLong()
 	{
-		return ((Number) value).longValue();
+		return value instanceof Number
+			? ((Number) value).longValue()
+			: Long.parseLong(String.valueOf(value));
 	}
 
 	@Override
 	public int readInt()
 	{
-		return ((Number) value).intValue();
+		return value instanceof Number
+			? ((Number) value).intValue()
+			: Integer.parseInt(String.valueOf(value));
 	}
 
 	@Override
