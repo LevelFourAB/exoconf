@@ -55,9 +55,7 @@ import se.l4.exoconf.sources.ConfigSource;
 public interface Config
 {
 	/**
-	 * Resolve values as the given path as an object. This is equivalent
-	 * to call {@link #get(String, Class)} and then {@link Value#getOrDefault()}
-	 * with the value {@code null}.
+	 * Resolve values as the given path as an object.
 	 *
 	 * @param path
 	 * @param type
@@ -67,9 +65,7 @@ public interface Config
 	<T> Optional<T> get(@NonNull String path, @NonNull Class<T> type);
 
 	/**
-	 * Resolve values as the given path as an object. This is equivalent
-	 * to call {@link #get(String, Class)} and then {@link Value#getOrDefault()}
-	 * with the value {@code null}.
+	 * Resolve values as the given path as an object.
 	 *
 	 * @param path
 	 * @param type
@@ -77,6 +73,24 @@ public interface Config
 	 */
 	@NonNull
 	<T> Optional<T> get(@NonNull String path, @NonNull Serializer<T> serializer);
+
+	/**
+	 * Resolve values as an object.
+	 *
+	 * @param type
+	 * @return
+	 */
+	@NonNull
+	<T> Optional<T> get(@NonNull Class<T> type);
+
+	/**
+	 * Resolve values as the given path as an object.
+	 *
+	 * @param type
+	 * @return
+	 */
+	@NonNull
+	<T> Optional<T> get(@NonNull Serializer<T> serializer);
 
 	/**
 	 * Scope this configuration to the specified path.

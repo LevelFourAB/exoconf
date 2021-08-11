@@ -66,21 +66,21 @@ public class MapInput
 
 	public static StreamingInput resolveInput(ConfigSource source, String key)
 	{
-		RichIterable<String> keys = source.getKeys(key);
-		if(keys.size() > 0)
-		{
-			IntIterable indexes = ConfigKeys.toList(keys);
-			if(indexes.size() > 0)
-			{
-				return new ListInput(source, key, indexes);
-			}
-
-			return new MapInput(source, key);
-		}
-
 		Object value = source.getValue(key);
 		if(value == null)
 		{
+			RichIterable<String> keys = source.getKeys(key);
+			if(keys.size() > 0)
+			{
+				IntIterable indexes = ConfigKeys.toList(keys);
+				if(indexes.size() > 0)
+				{
+					return new ListInput(source, key, indexes);
+				}
+
+				return new MapInput(source, key);
+			}
+
 			return new NullInput(key);
 		}
 		else
@@ -103,7 +103,7 @@ public class MapInput
 	@Override
 	protected IOException raiseException(String message)
 	{
-		return new IOException(key + ": " + message);
+		return new IOException("At `" + key + "`: " + message);
 	}
 
 	@Override
@@ -190,15 +190,21 @@ public class MapInput
 	}
 
 	@Override
-	public Token current()
-	{
-		return subInput == null ? super.current() : subInput.current();
-	}
-
-	@Override
 	public OptionalInt getLength()
 	{
 		return subInput == null ? OptionalInt.empty() : subInput.getLength();
+	}
+
+	@Override
+	public void skip()
+		throws IOException
+	{
+		if(current() == Token.UNKNOWN)
+		{
+			next();
+		}
+
+		super.skip();
 	}
 
 	@Override

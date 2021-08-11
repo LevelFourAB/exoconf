@@ -84,6 +84,18 @@ public class DefaultConfig
 	}
 
 	@Override
+	public <T> Optional<T> get(Class<T> type)
+	{
+		return get("", type);
+	}
+
+	@Override
+	public <T> Optional<T> get(Serializer<T> serializer)
+	{
+		return get("", serializer);
+	}
+
+	@Override
 	public Config scope(String path)
 	{
 		return new ScopedConfig(this, path);

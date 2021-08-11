@@ -73,7 +73,7 @@ public class ValueInput
 	@Override
 	public Token current()
 	{
-		return Token.VALUE;
+		return used ? Token.END_OF_STREAM : Token.VALUE;
 	}
 
 	@Override

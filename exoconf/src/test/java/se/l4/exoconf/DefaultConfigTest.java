@@ -176,6 +176,41 @@ public class DefaultConfigTest
 		assertThat(actual.height, is(100));
 	}
 
+	@Test
+	public void testRootObject()
+	{
+		Config config = Config.create()
+			.addStream(stream("medium: { width: 100, height: 100 }"))
+			.build();
+
+		Optional<Root> size = config.get(Root.class);
+		assertThat(size, notNullValue());
+
+		Root actual = size.get();
+		assertThat(actual, notNullValue());
+
+		assertThat(actual.medium.width, is(100));
+		assertThat(actual.medium.height, is(100));
+	}
+
+	@Test
+	public void testRootObjectViaKeys()
+	{
+		Config config = Config.create()
+			.addProperty("medium.width", 100)
+			.addProperty("medium.height", 100)
+			.build();
+
+		Optional<Root> size = config.get(Root.class);
+		assertThat(size, notNullValue());
+
+		Root actual = size.get();
+		assertThat(actual, notNullValue());
+
+		assertThat(actual.medium.width, is(100));
+		assertThat(actual.medium.height, is(100));
+	}
+
 	private InputStream stream(String in)
 	{
 		return new ByteArrayInputStream(in.getBytes(StandardCharsets.UTF_8));
@@ -200,5 +235,12 @@ public class DefaultConfigTest
 		@Min(1) @Max(1000)
 		@Expose
 		public int height;
+	}
+
+	@AnnotationSerialization
+	public static class Root
+	{
+		@Expose
+		public Size medium;
 	}
 }
