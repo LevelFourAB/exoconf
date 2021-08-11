@@ -52,4 +52,32 @@ public class EnvironmentSourceTest
 
 		assertThat(source.getKeys("test"), containsInAnyOrder("subkey", "key2"));
 	}
+
+	@Test
+	public void testKeys3()
+	{
+		EnvironmentConfigSource source = new EnvironmentConfigSource(Maps.mutable.<String, Object>empty()
+			.withKeyValue("TEST_SUBKEY", "v1")
+			.withKeyValue("TEST_key2", "v2")
+		);
+
+		assertThat(source.getKeys(""), containsInAnyOrder(
+			"TEST_SUBKEY",
+			"test_subkey",
+			"TEST",
+			"test",
+			"TEST_key2",
+			"test_key2"
+		));
+	}
+
+	@Test
+	public void testKeysFiltersEmpty()
+	{
+		EnvironmentConfigSource source = new EnvironmentConfigSource(Maps.mutable.<String, Object>empty()
+			.withKeyValue("_", "v1")
+		);
+
+		assertThat(source.getKeys(""), containsInAnyOrder("_"));
+	}
 }

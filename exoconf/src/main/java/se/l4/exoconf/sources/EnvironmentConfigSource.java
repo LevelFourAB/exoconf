@@ -36,16 +36,20 @@ public class EnvironmentConfigSource
 		String prefix = path.isEmpty() ? path : path + ConfigKeys.PATH_DELIMITER;
 		int length = prefix.length();
 		return properties.keysView().asLazy()
-			.flatCollect(key -> Lists.immutable.of(
-				key,
-				key.replace('_', '.'),
-				key.replace('_', '.').toLowerCase()
-			))
+			.flatCollect(key -> {
+				String trimmedKey = key.trim();
+				return Lists.immutable.of(
+					trimmedKey,
+					trimmedKey.replace('_', ConfigKeys.PATH_DELIMITER),
+					trimmedKey.replace('_', ConfigKeys.PATH_DELIMITER).toLowerCase()
+				);
+			})
 			.selectWith(String::startsWith, prefix)
 			.collect(key -> {
 				int idx = key.indexOf(ConfigKeys.PATH_DELIMITER, length);
 				return idx >= 0 ? key.substring(length, idx) : key.substring(length);
 			})
+			.select(s -> ! s.isEmpty())
 			.distinct();
 	}
 
