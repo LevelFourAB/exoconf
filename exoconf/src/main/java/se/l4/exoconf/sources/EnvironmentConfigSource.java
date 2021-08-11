@@ -4,6 +4,7 @@ import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.MapIterable;
+import org.eclipse.collections.impl.tuple.Tuples;
 
 /**
  * Source that provides access to environment variables. Added as the highest
@@ -21,7 +22,7 @@ public class EnvironmentConfigSource
 
 	EnvironmentConfigSource(MapIterable<String, Object> properties)
 	{
-		this.properties = properties;
+		this.properties = properties.collect((k, v) -> Tuples.pair(k.toUpperCase(), v));
 	}
 
 	@Override
@@ -40,8 +41,9 @@ public class EnvironmentConfigSource
 				String trimmedKey = key.trim();
 				return Lists.immutable.of(
 					trimmedKey,
+					replaceNonAscii(trimmedKey.toLowerCase()),
 					trimmedKey.replace('_', ConfigKeys.PATH_DELIMITER),
-					trimmedKey.replace('_', ConfigKeys.PATH_DELIMITER).toLowerCase()
+					replaceNonAscii(trimmedKey).replace('_', ConfigKeys.PATH_DELIMITER).toLowerCase()
 				);
 			})
 			.selectWith(String::startsWith, prefix)
@@ -56,20 +58,14 @@ public class EnvironmentConfigSource
 	@Override
 	public Object getValue(String path)
 	{
-		Object value = properties.get(path);
+		String key = path.toUpperCase();
+		Object value = properties.get(key);
 		if(value != null)
 		{
 			return value;
 		}
 
-		path = replaceNonAscii(path);
-		value = properties.get(path);
-		if(value != null)
-		{
-			return value;
-		}
-
-		return properties.get(path.toUpperCase());
+		return properties.get(replaceNonAscii(key));
 	}
 
 	private String replaceNonAscii(String path)

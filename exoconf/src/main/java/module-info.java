@@ -3,6 +3,7 @@ module se.l4.exoconf {
 
 	requires transitive java.validation;
 	requires org.eclipse.collections.api;
+	requires org.eclipse.collections.impl;
 
 	requires transitive se.l4.exobytes;
 	requires transitive se.l4.ylem.io;

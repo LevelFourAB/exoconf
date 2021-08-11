@@ -66,7 +66,7 @@ public class EnvironmentSourceTest
 			"test_subkey",
 			"TEST",
 			"test",
-			"TEST_key2",
+			"TEST_KEY2",
 			"test_key2"
 		));
 	}
